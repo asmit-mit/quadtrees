@@ -43,10 +43,10 @@ This is a ROS package providing a Quadtree-based representation for 2D occupancy
 Here are visual examples comparing a traditional occupancy grid to a quadtree-based occupancy grid:
 
 #### Traditional Occupancy Grid
-![Traditional Occupancy Grid](images/grid_image.png)
+![Traditional Occupancy Grid](images/grid.png)
 
 #### Quadtree Occupancy Grid
-![Quadtree Occupancy Grid](images/quadtree_image.png)
+![Quadtree Occupancy Grid](images/quadtree.png)
 
 ---
 

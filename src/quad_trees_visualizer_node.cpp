@@ -186,24 +186,26 @@ void mapCallback(const nav_msgs::OccupancyGrid::ConstPtr &msg) {
 
   ROS_INFO("Map built successfully.");
   if (!quad_tree) {
-    quad_tree = new QuadTree(2);
+    quad_tree = new QuadTree();
   }
   quad_tree->build(grid);
 
   ROS_INFO("QuadTree built successfully with leaf nodes: %d",
            quad_tree->getNumLeaves());
 
-  vector<QuadTreeNode *> adjacent_leaf_nodes =
-      quad_tree->getAdjacentLeafNodes(x, y);
-
-  ROS_INFO("Number of adjacent Leaf nodes of (%d, %d) -> %ld", x, y,
-           adjacent_leaf_nodes.size());
-
-  for (int i = 0; i < adjacent_leaf_nodes.size(); i++) {
-    ROS_INFO(
-        "(%d, %d) -> %d", adjacent_leaf_nodes[i]->x, adjacent_leaf_nodes[i]->y,
-        quad_tree->query(adjacent_leaf_nodes[i]->x, adjacent_leaf_nodes[i]->y));
-  }
+  /* vector<QuadTreeNode *> adjacent_leaf_nodes = */
+  /*     quad_tree->getAdjacentLeafNodes(x, y); */
+  /**/
+  /* ROS_INFO("Number of adjacent Leaf nodes of (%d, %d) -> %ld", x, y, */
+  /*          adjacent_leaf_nodes.size()); */
+  /**/
+  /* for (int i = 0; i < adjacent_leaf_nodes.size(); i++) { */
+  /*   ROS_INFO( */
+  /*       "Adjacent to: (%d, %d) -> %d", adjacent_leaf_nodes[i]->x, */
+  /*       adjacent_leaf_nodes[i]->y, */
+  /*       quad_tree->query(adjacent_leaf_nodes[i]->x,
+   * adjacent_leaf_nodes[i]->y)); */
+  /* } */
 
   global_frame_id = msg->header.frame_id;
 }
