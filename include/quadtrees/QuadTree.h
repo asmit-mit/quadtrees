@@ -32,7 +32,6 @@ private:
   void insertRecursive(QuadTreeNode *node, int x, int y, int value, int depth);
   int queryRecursive(QuadTreeNode *node, int x, int y);
   bool areNodesAdjacent(QuadTreeNode *node1, QuadTreeNode *node2);
-  QuadTreeNode *findLeafNode(QuadTreeNode *node, int x, int y);
   void collectLeafNodes(QuadTreeNode *node,
                         std::vector<QuadTreeNode *> &leaves);
   void
@@ -53,6 +52,7 @@ public:
   std::vector<QuadTreeNode *> getAdjacentLeafNodes(int x, int y);
   std::vector<QuadTreeNode *> getLeafNodes();
   int getNumLeaves();
+  QuadTreeNode *findLeafNode(QuadTreeNode *node, int x, int y);
   void updateLeafNodesList();
   void deleteTree();
 };
