@@ -45,7 +45,7 @@ Here are visual examples comparing a traditional occupancy grid to a quadtree-ba
 #### Traditional Occupancy Grid
 ![Traditional Occupancy Grid](images/grid.png)
 
-#### Quadtree Occupancy Grid
+#### Quadtree Occupancy Grid (Max Depth set to 7)
 ![Quadtree Occupancy Grid](images/quadtree.png)
 
 ---
