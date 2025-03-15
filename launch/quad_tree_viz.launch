@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find map_launcher)/launch/map_launcher.launch" />
+  <node name="quad_trees_visualizer_node" pkg="quadtrees" type="quad_trees_visualizer_node" output="screen" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find quadtrees)/viz/quadtrees.rviz" output="screen" />
+</launch>
