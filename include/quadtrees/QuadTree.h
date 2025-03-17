@@ -51,6 +51,7 @@ public:
   int query(int x, int y);
   std::vector<QuadTreeNode *> getAdjacentLeafNodes(int x, int y);
   std::vector<QuadTreeNode *> getLeafNodes();
+  std::vector<std::vector<int>> getGrid();
   int getNumLeaves();
   QuadTreeNode *findLeafNode(QuadTreeNode *node, int x, int y);
   void updateLeafNodesList();

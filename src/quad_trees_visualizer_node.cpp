@@ -9,8 +9,10 @@ using std::vector;
 
 QuadTree *quad_tree = nullptr;
 ros::Publisher marker_pub;
+ros::Publisher quadtree_map_pub;
 std::string global_frame_id = "map";
 nav_msgs::OccupancyGrid::ConstPtr current_map;
+vector<vector<int>> quadtree_grid;
 
 std_msgs::ColorRGBA getColorFromValue(int value) {
   std_msgs::ColorRGBA color;
@@ -162,6 +164,30 @@ void publishQuadTreeVisualization() {
             marker_array.markers.size());
 }
 
+void publishQuadTreeOccupancyGrid() {
+  if (!quad_tree || !quad_tree->root || !current_map)
+    return;
+
+  int width = current_map->info.width;
+  int height = current_map->info.height;
+
+  nav_msgs::OccupancyGrid quadtree_occupancy_grid;
+  quadtree_occupancy_grid.header.stamp = ros::Time::now();
+  quadtree_occupancy_grid.header.frame_id = global_frame_id;
+  quadtree_occupancy_grid.info = current_map->info;
+
+  quadtree_occupancy_grid.data.resize(width * height, -1);
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      int index = y * width + x;
+      quadtree_occupancy_grid.data[index] = quadtree_grid[y][x];
+    }
+  }
+
+  quadtree_map_pub.publish(quadtree_occupancy_grid);
+  ROS_DEBUG("Published QuadTree OccupancyGrid.");
+}
+
 void mapCallback(const nav_msgs::OccupancyGrid::ConstPtr &msg) {
   ROS_INFO("Received map metadata:");
   ROS_INFO("Width: %d, Height: %d", msg->info.width, msg->info.height);
@@ -179,28 +205,17 @@ void mapCallback(const nav_msgs::OccupancyGrid::ConstPtr &msg) {
     }
   }
 
-  ROS_INFO("Map built successfully.");
   if (!quad_tree) {
-    quad_tree = new QuadTree();
+    quad_tree = new QuadTree(7);
   }
   quad_tree->build(grid);
+
+  ROS_INFO("Map built successfully.");
 
   ROS_INFO("QuadTree built successfully with leaf nodes: %d",
            quad_tree->getNumLeaves());
 
-  /* vector<QuadTreeNode *> adjacent_leaf_nodes = */
-  /*     quad_tree->getAdjacentLeafNodes(x, y); */
-  /**/
-  /* ROS_INFO("Number of adjacent Leaf nodes of (%d, %d) -> %ld", x, y, */
-  /*          adjacent_leaf_nodes.size()); */
-  /**/
-  /* for (int i = 0; i < adjacent_leaf_nodes.size(); i++) { */
-  /*   ROS_INFO( */
-  /*       "Adjacent to: (%d, %d) -> %d", adjacent_leaf_nodes[i]->x, */
-  /*       adjacent_leaf_nodes[i]->y, */
-  /*       quad_tree->query(adjacent_leaf_nodes[i]->x,
-   * adjacent_leaf_nodes[i]->y)); */
-  /* } */
+  quadtree_grid = quad_tree->getGrid();
 
   global_frame_id = msg->header.frame_id;
 }
@@ -215,12 +230,17 @@ int main(int argc, char **argv) {
 
   marker_pub = nh.advertise<visualization_msgs::MarkerArray>(
       "quadtree_visualization", 1);
+  quadtree_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("quadtree_map", 1);
 
   ros::Subscriber map_sub = nh.subscribe("/map", 10, mapCallback);
 
   ros::Timer viz_timer = nh.createTimer(
       ros::Duration(1.0 / viz_rate),
       [](const ros::TimerEvent &) { publishQuadTreeVisualization(); });
+
+  ros::Timer occupancy_grid_timer = nh.createTimer(
+      ros::Duration(1.0 / viz_rate),
+      [](const ros::TimerEvent &) { publishQuadTreeOccupancyGrid(); });
 
   ROS_INFO("QuadTree visualizer started. Publishing at %.1f Hz", viz_rate);
 

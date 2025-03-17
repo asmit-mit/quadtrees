@@ -469,3 +469,27 @@ bool QuadTree::couldContainAdjacentNodes(QuadTreeNode *node,
            expanded_x >= node->x + node->width ||
            expanded_y >= node->y + node->height);
 }
+
+std::vector<std::vector<int>> QuadTree::getGrid() {
+  int width = root->width;
+  int height = root->height;
+
+  std::vector<std::vector<int>> grid(height, std::vector<int>(width, -1));
+
+  for (QuadTreeNode *leaf_node : leaf_nodes) {
+    if (leaf_node) {
+      int start_y = std::max(0, leaf_node->y);
+      int end_y = std::min(height, leaf_node->y + leaf_node->height);
+      int start_x = std::max(0, leaf_node->x);
+      int end_x = std::min(width, leaf_node->x + leaf_node->width);
+
+      for (int i = start_y; i < end_y; i++) {
+        for (int j = start_x; j < end_x; j++) {
+          grid[i][j] = leaf_node->value;
+        }
+      }
+    }
+  }
+
+  return grid;
+}
