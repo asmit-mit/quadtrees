@@ -72,3 +72,6 @@ find_package(catkin REQUIRED COMPONENTS quadtrees)
 ```
 
 This enables you to utilize its dynamic Quadtree-based representation within your own ROS nodes and projects.
+
+### Example Usage
+[Path Planning Using QuadTrees](https://github.com/asmit-mit/QuadTree_Path_Planning.git)
